@@ -1,3 +1,3 @@
 # fuckpython
-A machine learning framework for C++
+A machine learning framework for C++.
 Why? Fuck Python. That's why!

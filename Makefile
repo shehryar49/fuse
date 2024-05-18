@@ -1,5 +1,5 @@
 all:
-	g++ matrix.cpp main.cpp -DNDEBUG -O3
+	g++ matrix.cpp layer.cpp model.cpp main.cpp -DNDEBUG -O3
 clean:
 	rm -f *.o
 	rm a.out

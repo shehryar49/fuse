@@ -29,6 +29,7 @@ public:
     void add(double val);
     void sub(double val);
 	void mul(double val);
+    void mul(double val,Matrix& res);
     void lsub(double val);
     void exp();
 	void inverse();
@@ -38,11 +39,14 @@ public:
     void matmul(const Matrix& rhs,Matrix& result)const;
 	//Non inplace operations or methods that allocate memory
 	Matrix repeat_cols(size_t n);
+    void repeat_cols(size_t n,Matrix& res);
 	Matrix transpose();
 	void transpose(Matrix& res) const;
     Matrix row_argmax(); // returns column idx of max element in each row
 	void row_argmax(Matrix& res); // returns column idx of max element in each row
 	void setrow(size_t idx,double* row);
+    void setcol(size_t idx,double* col);
+    void setcols(double* col);
 	Matrix operator*(double val);
 	void resize(size_t r,size_t c);
     friend std::ostream& operator<<(std::ostream& out,const Matrix& );

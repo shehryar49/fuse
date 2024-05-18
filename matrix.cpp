@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include <cstdio>
 
 
 Matrix::Matrix(size_t r,size_t c)
@@ -58,7 +59,10 @@ double*& Matrix::operator[](size_t idx)
 void Matrix::sub(const Matrix& rhs)
 {
     if(rows != rhs.rows || cols!=rhs.cols)
+    {
+        fprintf(stderr,"WARNING: Incompatible dimensions");
         return;
+    }
     for(size_t i=0;i<rows;i++)
     {
         for(size_t j=0;j<cols;j++)
@@ -70,7 +74,10 @@ void Matrix::sub(const Matrix& rhs)
 void Matrix::add(const Matrix& rhs)
 {
     if(rows != rhs.rows || cols!=rhs.cols)
+    {
+        fprintf(stderr,"WARNING: Incompatible dimensions");
         return;
+    }
     for(size_t i=0;i<rows;i++)
     {
         for(size_t j=0;j<cols;j++)
@@ -82,7 +89,10 @@ void Matrix::add(const Matrix& rhs)
 void Matrix::mul(const Matrix& rhs)
 {
     if(rows != rhs.rows || cols!=rhs.cols)
+    {
+        fprintf(stderr,"WARNING: Incompatible dimensions");
         return;
+    }
     for(size_t i=0;i<rows;i++)
     {
         for(size_t j=0;j<cols;j++)
@@ -94,7 +104,10 @@ void Matrix::mul(const Matrix& rhs)
 void Matrix::div(const Matrix& rhs)
 {
     if(rows != rhs.rows || cols!=rhs.cols)
+    {
+        fprintf(stderr,"WARNING: Incompatible dimensions");
         return;
+    }
     for(size_t i=0;i<rows;i++)
     {
         for(size_t j=0;j<cols;j++)
@@ -107,7 +120,10 @@ void Matrix::div(const Matrix& rhs)
 void Matrix::addrow(const Matrix& rhs)
 {
     if(rhs.rows != 1 || cols!=rhs.cols)
+    {
+        fprintf(stderr,"WARNING: Incompatible dimensions");
         return;
+    }
     for(size_t i=0;i<rows;i++)
     {
         for(size_t j=0;j<cols;j++)
@@ -119,7 +135,10 @@ void Matrix::addrow(const Matrix& rhs)
 void Matrix::mulrow(const Matrix& rhs)
 {
     if(rhs.rows != 1 || cols!=rhs.cols)
+    {
+        fprintf(stderr,"WARNING: Incompatible dimensions");
         return;
+    }
     for(size_t i=0;i<rows;i++)
     {
         for(size_t j=0;j<cols;j++)
@@ -169,6 +188,22 @@ void Matrix::mul(double val)
         }
     }
 }
+void Matrix::mul(double val,Matrix& result)
+{
+    if(result.rows != rows || result.cols!=cols)
+    {
+        fprintf(stderr,"WARNING: Can't store result, mul(double,Matrix&) ");
+        return;
+    }
+    for(size_t i=0;i<rows;i++)
+    {
+        for(size_t j=0;j<cols;j++)
+        {
+            result.matrix[i][j] = matrix[i][j]*val;
+        }
+    }
+}
+
 void Matrix::lsub(double val)
 {
     for(size_t i=0;i<rows;i++)
@@ -255,6 +290,25 @@ Matrix Matrix::repeat_cols(size_t n)
     }
     return res;
 }
+void Matrix::repeat_cols(size_t n,Matrix& res)
+{
+    if(res.rows != rows || res.cols != cols*n)
+    {
+        fprintf(stderr, "WARNING: Unable to store repeat_cols result\n");
+        return;
+    }
+    for(size_t i = 0;i<rows;i++)
+    {
+        size_t m = 0;
+        for(size_t j=1;j<=n;j++)
+        {
+            for(size_t k=0;k<cols;k++)
+            {
+                res.matrix[i][m++] = matrix[i][k];
+            }
+        }
+    }
+}
 Matrix Matrix::transpose()
 {
     Matrix res(cols,rows);
@@ -268,7 +322,10 @@ Matrix Matrix::transpose()
 void Matrix::transpose(Matrix& res) const
 {
     if(res.rows != cols || res.cols != rows)
+    {
+        fprintf(stderr,"WARNING: Can't store transpose result.");
         return;
+    }
     for(size_t i=0;i<rows;i++)
     {
         for(size_t j=0;j<cols;j++)
@@ -297,7 +354,10 @@ Matrix Matrix::row_argmax() // returns column idx of max element in each row
 void Matrix::row_argmax(Matrix& res) // returns column idx of max element in each row
 {
     if(res.rows != rows || res.cols != 1)
+    {
+        fprintf(stderr,"WARNING: Can't store argmax result");
         return;
+    }
     for(size_t i=0;i<rows;i++)
     {
         double max_val = 0;
@@ -318,6 +378,28 @@ void Matrix::setrow(size_t idx,double* row)
     if(idx >= rows)
         return;
     memcpy(matrix[idx],row, cols*sizeof(double));
+}
+void Matrix::setcol(size_t idx,double* col)
+{
+    if(idx >= cols)
+      return;
+    size_t j = 0;
+    for(size_t i=0;i<rows;i++)
+    {
+        matrix[i][idx] = col[j++];
+    }
+}
+void Matrix::setcols(double* col)
+{
+    size_t k = 0;
+    for(size_t i=0;i<rows;i++)
+    {
+        for(size_t j=0;j<cols;j++)
+        {
+            matrix[i][j] = col[k];
+        }
+        k++;
+    }
 }
 Matrix Matrix::operator*(double val)
 {
